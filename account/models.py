@@ -1,6 +1,8 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import FileExtensionValidator
 from django.db import models
+
 
 class UserManager(BaseUserManager):
 
@@ -25,25 +27,39 @@ class UserManager(BaseUserManager):
         return self._create(email, password, **extra_fields)
 
 
-
-
-
 class User(AbstractUser):
-    username = models.CharField(unique=True, max_length=24)
-    email = models.EmailField(unique=True)
-    is_active = models.BooleanField(default=False)
-    activation_code = models.CharField(
-        max_length=8, blank=True
+    username = models.CharField(
+        unique=True,
+        max_length=24
     )
+    email = models.EmailField(
+        unique=True
+    )
+    is_active = models.BooleanField(
+        default=False
+    )
+    activation_code = models.CharField(
+        max_length=8,
+        blank=True
+    )
+    '''profile_pic = models.ImageField(
+        upload_to='images',
+        validators=[FileExtensionValidator(
+            ['png', 'jpg', 'jpeg']
+        )],
+        blank=True,
+        null=True
+    )'''
     objects = UserManager()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email']
 
     def create_activation_code(self):
         from django.utils.crypto import get_random_string
         code = get_random_string(
-            length=8, allowed_chars='1234567890qwertyuiop'
+            length=8,
+            allowed_chars='1234567890qwertyuiop'
         )
         self.activation_code = code
 

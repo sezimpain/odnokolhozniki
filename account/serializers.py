@@ -5,8 +5,17 @@ from .utils import send_activation_code
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(min_length=8, required=True, write_only=True)
-    password_confirm = serializers.CharField(min_length=8, required=True, write_only=True)
+    password = serializers.CharField(
+        min_length=8,
+        required=True,
+        write_only=True
+    )
+    password_confirm = serializers.CharField(
+        min_length=8,
+        required=True,
+        write_only=True
+    )
+
     class Meta:
         model = User
         fields = ('email', 'username', 'password', 'password_confirm')
@@ -21,17 +30,28 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
-        send_activation_code(user.email, user.activation_code, status='register')
+        send_activation_code(
+            user.email,
+            user.activation_code,
+            status='register'
+        )
         return user
-
-
 
 
 class CreateNewPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
-    code = serializers.CharField(max_length=30, required=True)
-    password = serializers.CharField(min_length=8, required=True)
-    password_confirm = serializers.CharField(min_length=8, required=True)
+    code = serializers.CharField(
+        max_length=30,
+        required=True
+    )
+    password = serializers.CharField(
+        min_length=8,
+        required=True
+    )
+    password_confirm = serializers.CharField(
+        min_length=8,
+        required=True
+    )
 
     def validate_username(self, username):
         if not User.objects.filter(username=username).exists():

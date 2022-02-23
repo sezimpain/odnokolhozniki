@@ -1,24 +1,29 @@
-
+import os
 from pathlib import Path
+from decouple import config
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-kjuh@$7nn0=#4cp3o@r@3^dk^dp&8iwjblxu)#l*n(tjfdc)hy'
 DEBUG = True
 ALLOWED_HOSTS = []
-
 AUTH_USER_MODEL = "account.User"
 REST_FRAMEWORK = {
-
+    'DEFAULT_FILTER_BACKENDS':
+        ('django_filters.rest_framework.DjangoFilterBackend', ),
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication'
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'account.permissions.IsActive'
-    ]
+    ],
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 3
 }
+
 from datetime import timedelta
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=90),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=90),
     'ROTATE_REFRESH_TOKEN': False,
     'BLACKLIST_AFTER_ROTATION': False
 
@@ -33,7 +38,14 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
 
     'account',
-    'rest_framework'
+    'rest_framework',
+    'post',
+    'like.apps.LikeConfig',
+    'comment',
+    'friend.apps.FriendConfig',
+    'profile_',
+    'rating',
+    'drf_yasg'
 ]
 
 MIDDLEWARE = [
@@ -100,6 +112,16 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+
+REDIS_HOST = 'localhost'
+REDIS_PORT = '6379'
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -107,3 +129,6 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'sezimpain@gmail.com'
 EMAIL_HOST_PASSWORD = 'elddupnus'
 
+
+MEDIA_URL = 'http://127.0.0.1:8000/media/'
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')

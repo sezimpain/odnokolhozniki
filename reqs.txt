@@ -6,3 +6,6 @@ django-model-utils==4.1.1
 Pillow
 djangorestframework-simplejwt
 python-decouple
+celery
+redis
+drf-yasg
